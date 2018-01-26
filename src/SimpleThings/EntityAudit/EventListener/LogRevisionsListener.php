@@ -191,7 +191,11 @@ class LogRevisionsListener implements EventSubscriber
                         $types[] = $meta->associationMappings[$idField]['type'];
                     }
 
-                    $params[] = $meta->reflFields[$idField]->getValue($entity);
+                    $param = $meta->reflFields[$idField]->getValue($entity);
+                    if (is_object($param) && method_exists($param, 'getId')) {
+                        $param = $param->getId();
+                    }
+                    $params[] = $param;
 
                     $sql .= 'AND ' . $columnName . ' = ?';
                 }
