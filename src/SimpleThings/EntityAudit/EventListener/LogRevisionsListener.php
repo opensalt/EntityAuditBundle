@@ -423,7 +423,9 @@ class LogRevisionsListener implements EventSubscriber
             $data = isset($entityData[$field]) ? $entityData[$field] : null;
             $relatedId = false;
 
-            if ($data !== null && $this->uow->isInIdentityMap($data)) {
+            if ($data !== null && is_scalar($data)) {
+                $relatedId = $data;
+            } elseif ($data !== null && $this->uow->isInIdentityMap($data)) {
                 $relatedId = $this->uow->getEntityIdentifier($data);
             }
 
@@ -435,7 +437,7 @@ class LogRevisionsListener implements EventSubscriber
                     $params[] = null;
                     $types[] = \PDO::PARAM_STR;
                 } else {
-                    $params[] = $relatedId ? $relatedId[$targetClass->fieldNames[$targetColumn]] : null;
+                    $params[] = $relatedId ? (is_scalar($relatedId) ? $relatedId : $relatedId[$targetClass->fieldNames[$targetColumn]]) : null;
                     $types[] = $targetClass->getTypeOfColumn($targetColumn);
                 }
             }
