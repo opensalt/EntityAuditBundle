@@ -419,6 +419,10 @@ class LogRevisionsListener implements EventSubscriber
             $data = isset($entityData[$field]) ? $entityData[$field] : null;
             $relatedId = false;
 
+            if (null !== $data && is_scalar($data)) {
+                $data = $this->em->getRepository($assoc['targetEntity'])->find($data);
+            }
+
             if ($data !== null && $this->uow->isInIdentityMap($data)) {
                 $relatedId = $this->uow->getEntityIdentifier($data);
             }
