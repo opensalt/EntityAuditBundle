@@ -9,8 +9,10 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $builder = new TreeBuilder();
-        $builder->root('simple_things_entity_audit')
+        $builder = new TreeBuilder('simple_things_entity_audit');
+        // Keep compatibility with symfony/config < 4.2
+        $rootNode = \method_exists($builder, 'getRootNode') ? $builder->getRootNode() : $builder->root('simple_things_entity_audit');
+        $rootNode
             ->children()
                 ->arrayNode('audited_entities')
                     ->prototype('scalar')->end()
